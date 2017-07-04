@@ -1,7 +1,7 @@
-package luxoft.console.application.db.update;
+package files.statistic.console.application.db.update;
 
-import luxoft.console.application.statistic.LineStatistic;
-import luxoft.console.application.statistic.TextFile;
+import files.statistic.console.application.statistic.TextFile;
+import files.statistic.console.application.statistic.LineStatistic;
 
 import java.sql.*;
 

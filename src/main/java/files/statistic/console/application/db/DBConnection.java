@@ -1,4 +1,4 @@
-package luxoft.console.application.db;
+package files.statistic.console.application.db;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

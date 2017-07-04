@@ -1,8 +1,8 @@
-package luxoft.console.application;
+package files.statistic.console.application;
 
-import luxoft.console.application.db.DBConnection;
-import luxoft.console.application.db.update.InsertStatistic;
-import luxoft.console.application.statistic.TextFile;
+import files.statistic.console.application.db.update.InsertStatistic;
+import files.statistic.console.application.statistic.TextFile;
+import files.statistic.console.application.db.DBConnection;
 
 import java.io.File;
 import java.nio.file.Paths;

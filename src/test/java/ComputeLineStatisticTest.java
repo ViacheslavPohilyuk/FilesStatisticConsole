@@ -1,8 +1,5 @@
 import org.junit.Test;
-import luxoft.console.application.statistic.LineStatistic;
-import luxoft.console.application.statistic.TextFile;
-
-import java.io.File;
+import files.statistic.console.application.statistic.LineStatistic;
 
 /**
  * Created by mac on 25.06.17.

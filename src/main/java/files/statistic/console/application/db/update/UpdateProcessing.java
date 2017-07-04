@@ -1,4 +1,4 @@
-package luxoft.console.application.db.update;
+package files.statistic.console.application.db.update;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

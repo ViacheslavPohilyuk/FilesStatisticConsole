@@ -1,4 +1,4 @@
-package luxoft.console.application.statistic;
+package files.statistic.console.application.statistic;
 
 /**
  * Created by mac on 16.06.17.
