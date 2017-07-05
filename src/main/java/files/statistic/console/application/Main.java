@@ -61,7 +61,7 @@ public class Main {
         Connection conn = dbConnection.getConnection();
 
         /* Add file statistic to the db */
-        new InsertStatistic(conn, file).insertFileStatistic();
+        new InsertStatistic(conn, file).transactionUpdate();
 
         /* Closing connection to the db */
         dbConnection.closeConnection(conn);
@@ -86,7 +86,7 @@ public class Main {
 
             /* Add files statistic to the db */
             for (TextFile file : files)
-                new InsertStatistic(conn, file).insertFileStatistic();
+                new InsertStatistic(conn, file).transactionUpdate();
 
             /* Closing connection to the db */
             dbConnection.closeConnection(conn);
