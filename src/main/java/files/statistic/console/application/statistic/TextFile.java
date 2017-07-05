@@ -1,11 +1,15 @@
 package files.statistic.console.application.statistic;
 
+import files.statistic.console.application.db.update.InsertStatistic;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -97,8 +101,7 @@ public class TextFile {
      * @param directory a path to a directory
      * @return array of TextFile objects with lines statistic
      */
-    public static TextFile[] folderFilesReadAndProcess(Path directory) {
-        TextFile[] outFiles = null;
+    public static void folderFilesReadAndProcess(Connection conn, Path directory) {
         int maxDepth = 5;
         try (Stream<Path> stream = Files.walk(directory, maxDepth)) {
             List<String> paths = stream
@@ -111,34 +114,26 @@ public class TextFile {
             for (String p : paths)
                 System.out.println(p);
 
-            /* Knew how many threads this system can support */
-            int systemThreadsCount = Runtime.getRuntime().availableProcessors();
-            System.out.println("\nThreads count in this system: " + systemThreadsCount);
-
             TextFile[] files = new TextFile[paths.size()];
 
+            /* Knew how many threads this system can support */
+            int systemThreadsCount = Runtime.getRuntime().availableProcessors();
             /* Each thread take some count of files which it will process
              * depends of count of threads that current system can support */
             int threadFiles = files.length / systemThreadsCount;
-            int runningThreadsCount = (threadFiles < systemThreadsCount)? threadFiles : systemThreadsCount;
-            int filesPerRunningThread = files.length / runningThreadsCount;
-            int restThreads = files.length % runningThreadsCount;
-            for (int j = 0; j < runningThreadsCount; j++) {
+            /* We create additional thread if we can't distribute files between available threads evenly */
+            int additionalThread = ((files.length % systemThreadsCount) > 0) ? 1 : 0;
+
+            for (int j = 0; j < systemThreadsCount + additionalThread; j++) {
                 int block = j;
                 new Thread(() -> {
-                    long start = System.currentTimeMillis();
-                    for (int i = block * filesPerRunningThread;
-                         (i < i + ((block == 0)? filesPerRunningThread + restThreads : filesPerRunningThread)) && (i < files.length); i++) {
+                    for (int i = block * threadFiles; (i < i + threadFiles) && (i < files.length); i++)
                         files[i] = readFileAndProcess(new File(paths.get(i)));
-                    }
-                    System.out.println("Thread " + Thread.currentThread().getId()  + " run time: " + (System.currentTimeMillis() - start) + " ms");
                 }).start();
             }
-            outFiles = files;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return outFiles;
     }
 
     /**

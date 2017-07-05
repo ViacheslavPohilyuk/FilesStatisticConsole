@@ -8,6 +8,7 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Created by mac on 16.06.17.
@@ -77,20 +78,18 @@ public class Main {
         dirPath = sc.next();
 
         if (new File(dirPath).isDirectory()) {
-            /* Read files and compute statistic for each one */
-            TextFile[] files = TextFile.folderFilesReadAndProcess(Paths.get(dirPath));
+            long begin = System.currentTimeMillis();
 
             /* Open connection to the db */
             DBConnection dbConnection = new DBConnection();
             Connection conn = dbConnection.getConnection();
 
-            /* Add files statistic to the db */
-            for (TextFile file : files)
-                new InsertStatistic(conn, file).transactionUpdate();
+            /* Read files and compute statistic for each one */
+            TextFile.folderFilesReadAndProcess(conn, Paths.get(dirPath));
 
             /* Closing connection to the db */
             dbConnection.closeConnection(conn);
-
+            System.out.println("Program runtime: " + (System.currentTimeMillis() - begin));
             System.out.println("Statistic data have been successfully saved to the db!");
         } else {
             System.err.println("You entered invalid path, it is not directory!");

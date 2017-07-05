@@ -32,7 +32,7 @@ public class InsertStatistic {
              * This method will execute if only 3 sql queries accomplish successfully */
             conn.commit();
             /* After committing changes we can allow autocommitting */
-            conn.setAutoCommit(true);
+            //conn.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Committing error!");
@@ -49,7 +49,6 @@ public class InsertStatistic {
      */
     private void insertFileStatistic() {
         /* Insert file's data */
-        UpdateProcessing updateProcessing[] = new UpdateProcessing[3];
         doUpdate("INSERT INTO File(name, dateStatComp) VALUES(?, ?)",
                 (preparedStatement) -> {
                     preparedStatement.setString(1, file.getName());
