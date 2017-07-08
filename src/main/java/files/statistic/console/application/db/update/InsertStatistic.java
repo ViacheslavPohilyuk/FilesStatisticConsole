@@ -31,8 +31,6 @@ public class InsertStatistic {
             /* Important! This is commit of changing in the db.
              * This method will execute if only 3 sql queries accomplish successfully */
             conn.commit();
-            /* After committing changes we can allow autocommitting */
-            //conn.setAutoCommit(true);
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Committing error!");
@@ -52,8 +50,7 @@ public class InsertStatistic {
         doUpdate("INSERT INTO File(name, dateStatComp) VALUES(?, ?)",
                 (preparedStatement) -> {
                     preparedStatement.setString(1, file.getName());
-                    preparedStatement.setTimestamp(2,
-                            new Timestamp(file.getDateOfStatisticComputation().getTime()));
+                    preparedStatement.setString(2, file.getDateOfStatisticComputation());
                     preparedStatement.executeUpdate();
 
                     ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
@@ -92,12 +89,6 @@ public class InsertStatistic {
                     }
                     preparedStatement.executeBatch();
                 });
-        try {
-            conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.err.println("Committing error!");
-        }
     }
 
     /**

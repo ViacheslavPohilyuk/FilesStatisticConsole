@@ -1,6 +1,6 @@
 package files.statistic.console.application.statistic;
 
-import files.statistic.console.application.db.update.InsertStatistic;
+import org.joda.time.LocalDateTime;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,17 +22,15 @@ import java.util.stream.Stream;
 public class TextFile {
     private Long id;
     private String name;
-    private Date dateOfStatisticComputation;
+    private String dateOfStatisticComputation;
     private List<LineStatistic> lines;
 
     public TextFile() {
-        /* Getting current date in time zone: "Africa/Cairo" */
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        df.setTimeZone(TimeZone.getTimeZone("Africa/Cairo"));
-        Calendar cal = df.getCalendar();
-        cal.add(Calendar.HOUR, +3);
-        cal.add(Calendar.YEAR, +80);
-        this.dateOfStatisticComputation = cal.getTime();
+        /* Getting current date when the statistic is calculated */
+        String ldt = new LocalDateTime().toString();
+        int indexT = ldt.indexOf('T');
+        String dateAdded = ldt.substring(0, indexT) + " " + ldt.substring(indexT + 1, ldt.lastIndexOf(':'));
+        setDateOfStatisticComputation(dateAdded);
 
         lines = new ArrayList<>();
     }
@@ -53,8 +51,12 @@ public class TextFile {
         this.id = id;
     }
 
-    public Date getDateOfStatisticComputation() {
+    public String getDateOfStatisticComputation() {
         return dateOfStatisticComputation;
+    }
+
+    public void setDateOfStatisticComputation(String dateOfStatisticComputation) {
+        this.dateOfStatisticComputation = dateOfStatisticComputation;
     }
 
     public List<LineStatistic> getLines() {
@@ -101,7 +103,8 @@ public class TextFile {
      * @param directory a path to a directory
      * @return array of TextFile objects with lines statistic
      */
-    public static void folderFilesReadAndProcess(Connection conn, Path directory) {
+    public static TextFile[] folderFilesReadAndProcess(Path directory) {
+        TextFile[] outFiles = null;
         int maxDepth = 5;
         try (Stream<Path> stream = Files.walk(directory, maxDepth)) {
             List<String> paths = stream
@@ -127,13 +130,17 @@ public class TextFile {
             for (int j = 0; j < systemThreadsCount + additionalThread; j++) {
                 int block = j;
                 new Thread(() -> {
-                    for (int i = block * threadFiles; (i < i + threadFiles) && (i < files.length); i++)
+                    for (int i = block * threadFiles; (i < i + threadFiles) && (i < files.length); i++) {
                         files[i] = readFileAndProcess(new File(paths.get(i)));
+                        System.out.println("File" + i + ": " + files[i].dateOfStatisticComputation);
+                    }
                 }).start();
             }
+            outFiles = files;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return outFiles;
     }
 
     /**

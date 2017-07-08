@@ -80,12 +80,16 @@ public class Main {
         if (new File(dirPath).isDirectory()) {
             long begin = System.currentTimeMillis();
 
+            /* Read files and compute statistic for each one */
+            TextFile[] files = TextFile.folderFilesReadAndProcess(Paths.get(dirPath));
+
             /* Open connection to the db */
             DBConnection dbConnection = new DBConnection();
             Connection conn = dbConnection.getConnection();
 
-            /* Read files and compute statistic for each one */
-            TextFile.folderFilesReadAndProcess(conn, Paths.get(dirPath));
+            /* Add files statistic to the db */
+            for (TextFile file : files)
+                new InsertStatistic(conn, file).transactionUpdate();
 
             /* Closing connection to the db */
             dbConnection.closeConnection(conn);
