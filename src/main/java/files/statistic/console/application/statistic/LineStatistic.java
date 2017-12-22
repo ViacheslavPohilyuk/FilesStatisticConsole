@@ -10,6 +10,16 @@ public class LineStatistic {
     private int lineLength;
     private int avgWordLength = 0;
 
+    public LineStatistic() {
+    }
+
+    public LineStatistic(String longestWord, String shortestWord, int lineLength, int avgWordLength) {
+        this.longestWord = longestWord;
+        this.shortestWord = shortestWord;
+        this.lineLength = lineLength;
+        this.avgWordLength = avgWordLength;
+    }
+
     public String getLongestWord() {
         return longestWord;
     }
@@ -48,6 +58,28 @@ public class LineStatistic {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LineStatistic that = (LineStatistic) o;
+
+        if (lineLength != that.lineLength) return false;
+        if (avgWordLength != that.avgWordLength) return false;
+        if (longestWord != null ? !longestWord.equals(that.longestWord) : that.longestWord != null) return false;
+        return shortestWord != null ? shortestWord.equals(that.shortestWord) : that.shortestWord == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = longestWord != null ? longestWord.hashCode() : 0;
+        result = 31 * result + (shortestWord != null ? shortestWord.hashCode() : 0);
+        result = 31 * result + lineLength;
+        result = 31 * result + avgWordLength;
+        return result;
     }
 
     @Override

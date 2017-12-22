@@ -1,47 +1,25 @@
-import org.junit.Test;
 import files.statistic.console.application.statistic.LineStatistic;
+import org.junit.Test;
 
-/**
- * Created by mac on 25.06.17.
- */
+import static org.junit.Assert.assertEquals;
+import static files.statistic.console.application.statistic.LineStatistic.computeLineStatistic;
+
 public class ComputeLineStatisticTest {
     @Test
     public void testRegularLines() throws Exception {
         String test = "JavaScript is a multi-paradigm, dynamic language with types and operators, standard built-in objects, and methods.";
-        LineStatistic line = LineStatistic.computeLineStatistic(test);
-
-        boolean isLineStatisticRight = isMatchSpecificLineStatistic(line,
-                "multi-paradigm,", "a", 114, 6);
-
-        assert (isLineStatisticRight);
+        assertEquals(computeLineStatistic(test), new LineStatistic("multi-paradigm,", "a", 114, 6));
     }
 
     @Test
     public void testLinesWithSeveralSpacesGoOneByOne() throws Exception {
         String test = " A            re-introduction  to   JavaScript    (JS tutorial)";
-        LineStatistic line = LineStatistic.computeLineStatistic(test);
-
-        boolean isLineStatisticRight = isMatchSpecificLineStatistic(line,
-                "re-introduction", "A", 63, 6);
-
-        assert (isLineStatisticRight);
+        assertEquals(computeLineStatistic(test), new LineStatistic("re-introduction", "A", 63, 6));
     }
 
     @Test
     public void testEmptyLines() throws Exception {
-        String test = "";
-        LineStatistic line = LineStatistic.computeLineStatistic(test);
+        assertEquals(computeLineStatistic(""), new LineStatistic("", "", 0, 0));
 
-        boolean isLineStatisticRight = isMatchSpecificLineStatistic(line,
-                "", "", 0, 0);
-
-        assert (isLineStatisticRight);
-    }
-
-    private boolean isMatchSpecificLineStatistic(LineStatistic lineStatistic, String longestWord, String shortestWord, int lineLength, int avgWordLength) {
-        return (lineStatistic.getLongestWord().equals(longestWord) &&
-                lineStatistic.getShortestWord().equals(shortestWord) &&
-                lineStatistic.getLineLength() == lineLength &&
-                lineStatistic.getAvgWordLength() == avgWordLength);
     }
 }

@@ -32,8 +32,7 @@ public class DBConnection {
         if (driver != null) {
             try {
                 Class.forName(driver);
-            }
-            catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
                 System.out.println("No such driver!");
             }
@@ -64,14 +63,14 @@ public class DBConnection {
     }
 
     public void closeConnection(Connection connection) {
-      /*  if (connection != null) {
+        if (connection != null) {
             try {
                 connection.close();
             } catch (SQLException e) {
                 System.err.println("Database closing error!");
                 e.printStackTrace();
             }
-        } */
+        }
     }
 }
 
