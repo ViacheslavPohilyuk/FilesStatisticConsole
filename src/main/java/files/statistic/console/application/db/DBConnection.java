@@ -13,7 +13,7 @@ import java.util.Properties;
  */
 public class DBConnection {
     private Connection conn = null;
-    private final String propertiesFileName = "dbconnection.properties";
+    private final String propertiesFileName = "local_mysql.properties";
 
     public DBConnection() {
         Properties props = new Properties();
