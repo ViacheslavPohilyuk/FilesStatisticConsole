@@ -107,10 +107,8 @@ public class LineStatistic {
         LineStatistic lineStatistic = new LineStatistic();
         int lineLength = line.length();
 
-        /* Removing redundant space from a line and splitting it by spaces */
-        String[] wordsArray = line.replaceAll(" +", " ")
-                .trim()
-                .split(" ");
+        /* Splitting a line by one or more spaces */
+        String[] wordsArray = line.trim().split(" +");
 
         /* Count of words in a current line */
         int wordsLineCount = wordsArray.length;

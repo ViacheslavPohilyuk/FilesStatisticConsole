@@ -1,17 +1,13 @@
 package files.statistic.console.application.statistic;
 
-import org.joda.time.LocalDateTime;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,16 +19,12 @@ public class TextFile {
     private Long id;
     private String name;
     private String dateOfStatisticComputation;
-    private List<LineStatistic> lines;
+    private List<LineStatistic> lines = new ArrayList<>();
 
     public TextFile() {
-        /* Getting current date when the statistic is calculated */
-        String ldt = new LocalDateTime().toString();
-        int indexT = ldt.indexOf('T');
-        String dateAdded = ldt.substring(0, indexT) + " " + ldt.substring(indexT + 1, ldt.lastIndexOf(':'));
-        setDateOfStatisticComputation(dateAdded);
-
-        lines = new ArrayList<>();
+        String currentDateTime = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("dd.mm.yyyy kk:mm:ss"));
+        setDateOfStatisticComputation(currentDateTime);
     }
 
     public void setName(String name) {
@@ -121,9 +113,11 @@ public class TextFile {
 
             /* Knew how many threads this system can support */
             int systemThreadsCount = Runtime.getRuntime().availableProcessors();
+
             /* Each thread take some count of files which it will process
              * depends of count of threads that current system can support */
             int threadFiles = files.length / systemThreadsCount;
+
             /* We create additional thread if we can't distribute files between available threads evenly */
             int additionalThread = ((files.length % systemThreadsCount) > 0) ? 1 : 0;
 
