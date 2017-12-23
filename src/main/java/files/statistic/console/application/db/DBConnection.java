@@ -61,16 +61,5 @@ public class DBConnection {
     public synchronized Connection getConnection() {
         return this.conn;
     }
-
-    public void closeConnection(Connection connection) {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                System.err.println("Database closing error!");
-                e.printStackTrace();
-            }
-        }
-    }
 }
 

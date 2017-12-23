@@ -7,13 +7,13 @@ import files.statistic.console.application.db.DBConnection;
 import java.io.File;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Scanner;
-import java.util.Set;
 
 /**
  * Created by mac on 16.06.17.
  */
-public class Main {
+public class App {
     public static void main(String[] args) {
         String fileOrDir;
         boolean valid = true;
@@ -55,17 +55,14 @@ public class Main {
 
         /* Read text file and compute statistic for each
          * line in the one */
-        TextFile file = TextFile.readFileAndProcess(new File(filePath));
+        TextFile file = TextFile.readAndProcessFile(new File(filePath));
 
-        /* Open connection to the db */
-        DBConnection dbConnection = new DBConnection();
-        Connection conn = dbConnection.getConnection();
-
-        /* Add file statistic to the db */
-        new InsertStatistic(conn, file).transactionUpdate();
-
-        /* Closing connection to the db */
-        dbConnection.closeConnection(conn);
+        try (Connection conn = new DBConnection().getConnection()) {
+            /* Add file statistic to the db */
+            new InsertStatistic(conn, file).transactionUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         System.out.println("Statistic data have been successfully saved to the db!");
     }
@@ -81,18 +78,16 @@ public class Main {
             long begin = System.currentTimeMillis();
 
             /* Read files and compute statistic for each one */
-            TextFile[] files = TextFile.folderFilesReadAndProcess(Paths.get(dirPath));
+            TextFile[] files = TextFile.readAndProcessFolderFiles(Paths.get(dirPath));
 
-            /* Open connection to the db */
-            DBConnection dbConnection = new DBConnection();
-            Connection conn = dbConnection.getConnection();
+            try (Connection conn = new DBConnection().getConnection()) {
+                /* Add files statistic to the db */
+                for (TextFile file : files)
+                    new InsertStatistic(conn, file).transactionUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
-            /* Add files statistic to the db */
-            for (TextFile file : files)
-                new InsertStatistic(conn, file).transactionUpdate();
-
-            /* Closing connection to the db */
-            dbConnection.closeConnection(conn);
             System.out.println("Program runtime: " + (System.currentTimeMillis() - begin));
             System.out.println("Statistic data have been successfully saved to the db!");
         } else {

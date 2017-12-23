@@ -71,7 +71,7 @@ public class TextFile {
      *
      * @return a TextFile object
      */
-    public static TextFile readFileAndProcess(File filePath) {
+    public static TextFile readAndProcessFile(File filePath) {
         fileChecking(filePath); // file validation
 
         TextFile file = new TextFile();
@@ -95,7 +95,7 @@ public class TextFile {
      * @param directory a path to a directory
      * @return array of TextFile objects with lines statistic
      */
-    public static TextFile[] folderFilesReadAndProcess(Path directory) {
+    public static TextFile[] readAndProcessFolderFiles(Path directory) {
         TextFile[] outFiles = null;
         int maxDepth = 5;
         try (Stream<Path> stream = Files.walk(directory, maxDepth)) {
@@ -125,7 +125,7 @@ public class TextFile {
                 int block = j;
                 new Thread(() -> {
                     for (int i = block * threadFiles; (i < i + threadFiles) && (i < files.length); i++) {
-                        files[i] = readFileAndProcess(new File(paths.get(i)));
+                        files[i] = readAndProcessFile(new File(paths.get(i)));
                         System.out.println("File" + i + ": " + files[i].dateOfStatisticComputation);
                     }
                 }).start();

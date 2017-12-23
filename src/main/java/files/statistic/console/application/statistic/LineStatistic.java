@@ -8,7 +8,7 @@ public class LineStatistic {
     private String longestWord = "";
     private String shortestWord = "";
     private int lineLength;
-    private int avgWordLength = 0;
+    private int avgWordLength;
 
     public LineStatistic() {
     }
@@ -104,66 +104,43 @@ public class LineStatistic {
      * @return an LineStatistic object with statistic of a current line
      */
     public static LineStatistic computeLineStatistic(String line) {
-        LineStatistic lineStatistic = new LineStatistic();
         int lineLength = line.length();
 
         /* Splitting a line by one or more spaces */
-        String[] wordsArray = line.trim().split(" +");
+        String[] wordsArr = line.trim().split(" +");
 
-        /* Count of words in a current line */
-        int wordsLineCount = wordsArray.length;
+        int wordsInLineCount = wordsArr.length;
 
         /* Index of longest and shortest words in the massive {@code wordsArray} */
-        int indexMaxLenWord = 0;
-        int indexMinLenWord = 0;
+        int indexMaxWordLen = 0;
+        int indexMinWordLen = 0;
 
-        /* Sum of letters of the all words in a line */
-        int lengthOfAllLineWords = 0;
-
-        /* String objects for storing longest and shortest words */
-        String longestWord = "";
-        String shortestWord = "";
-
-        /* a valuable for storing average count of letters of each line */
-        int avgWordLength = 0;
-
-        if (wordsLineCount != 0) {
-            int j = 0;
-
-            /* Length of longest and shortest words */
-            int MaxLenWordLetterCount = wordsArray[0].length();
-            int MinLenWordLetterCount = wordsArray[0].length();
-
-            /* Each word of a line processing */
-            for (String word : wordsArray) {
-                word = word.trim();
-
-                /* Finding a longest word in a line */
-                if (MaxLenWordLetterCount < word.length()) {
-                    MaxLenWordLetterCount = word.length();
-                    indexMaxLenWord = j;
-                }
-
-                /* Finding a shortest word in a line */
-                if (MinLenWordLetterCount > word.length()) {
-                    MinLenWordLetterCount = word.length();
-                    indexMinLenWord = j;
-                }
-                lengthOfAllLineWords += word.length();
-                j++;
-            }
-            longestWord = wordsArray[indexMaxLenWord];
-            shortestWord = wordsArray[indexMinLenWord];
-            avgWordLength = lengthOfAllLineWords / wordsLineCount;
+        int lenAllWords = 0;
+        if (wordsInLineCount == 0) {
+            return new LineStatistic();
         }
 
-        /* Saving data of statistic of a current line
-         * to a LineStatistic object */
-        lineStatistic.setLongestWord(longestWord);
-        lineStatistic.setShortestWord(shortestWord);
-        lineStatistic.setAvgWordLength(avgWordLength);
-        lineStatistic.setLineLength(lineLength);
+        /* Length of longest and shortest words */
+        int maxWordLen = wordsArr[0].length();
+        int minWordLen = wordsArr[0].length();
 
-        return lineStatistic;
+        int j = 0;
+        for (String word : wordsArr) {
+            if (maxWordLen < word.length()) {
+                maxWordLen = word.length();
+                indexMaxWordLen = j;
+            }
+            if (minWordLen > word.length()) {
+                minWordLen = word.length();
+                indexMinWordLen = j;
+            }
+            lenAllWords += word.length();
+            j++;
+        }
+
+        String longestWord = wordsArr[indexMaxWordLen];
+        String shortestWord = wordsArr[indexMinWordLen];
+        int avgWordLen = lenAllWords / wordsInLineCount;
+        return new LineStatistic(longestWord, shortestWord, lineLength, avgWordLen);
     }
 }
